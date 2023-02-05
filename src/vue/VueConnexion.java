@@ -1,7 +1,6 @@
 package vue;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,51 +16,39 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import controller.C_Technicien;
+import controller.Orange;
+import controller.Technicien;
 
-import controller.C_UserAdmin;
-import controller.LevelingLourd;
-import controller.UserAdmin;
-
-public class VueConnexion extends JFrame implements ActionListener,KeyListener {
-	
-	private JLabel lbTitre = new JLabel("Portail Leveling");
-	private JLabel lbHead = new JLabel("Seul les admins peuvent se connecter");
-	private	JTextField txtEmail = new JTextField();
-	private JPasswordField txtMdp = new JPasswordField();
-	private JButton btAnnuler = new JButton("Annuler");
-	private JButton btSeConnecter = new JButton("Se Connecter");
+public class VueConnexion extends JFrame implements ActionListener,KeyListener
+{
+		private JTextField txtEmail = new JTextField();
+		private JPasswordField txtMdp = new JPasswordField();
+		private JButton btAnnuler = new JButton("Annuler");
+		private JButton btSeConnecter = new JButton("Se Connecter");
 	
 	private JPanel panelCon = new JPanel();
 	
 	public VueConnexion() {
-		this.setTitle("Leveling");
+		this.setTitle("Gestion des interventions");
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.getContentPane().setBackground(Color.white);
-		this.setBounds(500,100, 900, 900);
+		this.getContentPane().setBackground( new Color(20,103,240));
+		this.setBounds(200,200, 700, 300);
 		this.setLayout(null);
-		ImageIcon logo = new ImageIcon ("src/images/logo.png");
+		ImageIcon logo = new ImageIcon ("src/images/Orange_logoS.png");
 		JLabel monLogo = new JLabel(logo);
-		monLogo.setBounds(20,20,400,400);
+		monLogo.setBounds(20,20,200,200);
 		this.add(monLogo);
 		
-		
 		//construction du panel connexion
-		this.lbTitre.setBounds(500,10,400,290);
-		lbTitre.setFont( new Font("Bookman Old Style",Font.BOLD, 30));
-		lbTitre.setForeground(Color.BLUE);
-		this.add(this.lbTitre);
-		this.lbHead.setBounds(470, 100, 400, 290);
-		lbHead.setFont( new Font("Bookman Old Style",Font.BOLD, 20));
-		this.add(this.lbHead);
+		this.panelCon.setBounds(250,40,380,200);
 		
-		
-		this.panelCon.setBounds(80,500,700,300);
-		this.panelCon.setBackground(Color.white);
+		this.panelCon.setBackground(new Color(20,103,240));
 		this.panelCon.setLayout(new GridLayout(3,2));
 		this.panelCon.add(new JLabel("Email"));
 		this.panelCon.add(this.txtEmail);
-		this.panelCon.add(new JLabel("Mot de passe"));
+		this.panelCon.add(new JLabel("MDP"));
 		this.panelCon.add(this.txtMdp);
 		this.panelCon.add(this.btAnnuler);
 		this.panelCon.add(this.btSeConnecter);
@@ -77,60 +64,39 @@ public class VueConnexion extends JFrame implements ActionListener,KeyListener {
 		
 		this.setVisible(true);
 	}
-	
+
 	public void traitement() {
 		String email = this.txtEmail.getText();
 		String mdp = new String (this.txtMdp.getPassword());
 		if(email.equals("") || mdp.equals("")) {
 			JOptionPane.showMessageDialog(this,"Veuillez remplir tous les champs");
 		}else {
-			// verrification dans la bases de données : table useradmin
-			UserAdmin unUserAdmin = C_UserAdmin.selectWhereUserAdmin(email, mdp);
-			if(unUserAdmin == null) {
+			// verrification dans la bases de données : table technicien
+			Technicien unTechnicien = C_Technicien.selectWhereTechnicien(email, mdp);
+			if(unTechnicien == null) {
 				JOptionPane.showMessageDialog(this,"Veuillez vérifie vos identifiants");
 			}else {
-				JOptionPane.showMessageDialog(this,"Bienvenue Mr/Mme "+unUserAdmin.getUserPseudo());
+				JOptionPane.showMessageDialog(this,"Bienvenue Mr/Mme "+unTechnicien.getNom());
 				this.txtEmail.setText("");
 				this.txtMdp.setText("");
 				//ouverture de session
-				LevelingLourd.gererVueConnexion(false);
-				LevelingLourd.gererVueGenerale(true, unUserAdmin);
-				
-				//
-				
+				Orange.gererVueConnexion(false);
+				Orange.gererVueGenerale(true, unTechnicien);
 			}
 		}
+		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()== this.btAnnuler) {
+			this.txtEmail.setText("");
+			this.txtMdp.setText("");
+		}
+		else if (e.getSource()== this.btSeConnecter) {
+			this.traitement();
+		}
+		
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -140,7 +106,9 @@ public class VueConnexion extends JFrame implements ActionListener,KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+			this.traitement();
+		}
 		
 	}
 
@@ -149,17 +117,4 @@ public class VueConnexion extends JFrame implements ActionListener,KeyListener {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getSource()== this.btAnnuler) {
-			this.txtEmail.setText("");
-			this.txtMdp.setText("");
-		}
-		else if (e.getSource()== this.btSeConnecter) {
-			this.traitement();
-		}
-	}
-
 }

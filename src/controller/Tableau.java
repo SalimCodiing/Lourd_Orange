@@ -1,89 +1,109 @@
 package controller;
-import javax.swing.event.TableModelListener;
+
 import javax.swing.table.AbstractTableModel;
 
-//Classe abstraite de gestion dynamique de la table
-public class Tableau extends AbstractTableModel{ 
+
+public class Tableau extends AbstractTableModel // class absatraite de gestion dynamique d'une table
+{
+
 	
-	private Object[][] donnees;
-	private String[] entetes;
+	private Object [] [] donnees;
+	private String [] entetes;
 	
-	//Constructeur
-	public Tableau(Object[][] donnees, String[] entetes) {
-		this.donnees=donnees;
-		this.entetes=entetes;
+	public Tableau(Object [][] donnees, String [] entetes) {
+		this.donnees = donnees;
+		this.entetes = entetes;
 	}
 
 	@Override
 	public int getRowCount() {
-		//Retourne le nombre de lignes
+		//retourne le nb de lignes
+		
 		return this.donnees.length;
 	}
 
 	@Override
 	public int getColumnCount() {
-		//Retourne le nombre de colonne
+		//retourne le nombre de colonnes
 		return this.entetes.length;
 	}
 
 	@Override
 	public Object getValueAt(int ligne, int colonne) {
-		//Retourne la valeur se trouvent au croisement ligne - colonne
+		//retourne la valeur se trouvant au croisement ligne, colonne
 		return this.donnees[ligne][colonne];
 	}
 
 	@Override
 	public String getColumnName(int colonne) {
-		//Retourne le nom de la colonne
+		// retourn e nom de la colonne
 		return this.entetes[colonne];
 	}
-
-	//Méthode insertion d'une ligne dans la matrice donnees
+	
+	
+	
+	
+	//methode insertion d'une ligne dans la matrice données
 	public void insererLigne(Object[] ligne) {
-		Object[][] matrice= new Object[this.donnees.length+1][this.entetes.length];
-		for(int i=0; i<this.donnees.length; i++) {
-			matrice[i]=this.donnees[i];
+		
+		Object [] [] matrice = new Object [this.donnees.length +1] [this.entetes.length];
+		for(int i =0; i<this.donnees.length; i++) {
+			matrice[i] = this.donnees[i];
 		}
-		matrice[this.donnees.length]=ligne;
-		this.donnees=matrice;
-		this.fireTableDataChanged(); //Actualiser la modification de donnees
+		matrice[this.donnees.length] = ligne;
+		this.donnees = matrice; // recopie de la matrice sur les données
+		this.fireTableDataChanged(); //actualiser la modification des données
 	}
 	
-	
-	//Méthode suppression d'une ligne dans la matrice donnees
+	//methode supprimer d'une ligne dans la matrice données
 	public void supprimerLigne(int numLigne) {
-		Object[][] matrice= new Object[this.donnees.length-1][this.entetes.length];
-		int j=0;
-		for(int i=0; i<this.donnees.length; i++) {
-			if(i!=numLigne) {
-				matrice[j]=this.donnees[i];
+		Object [] [] matrice = new Object [this.donnees.length -1] [this.entetes.length];
+		int j = 0;
+		for(int i =0; i<this.donnees.length; i++) {
+			if(i != numLigne) {
+				matrice[j] = this.donnees[i];
 				j++;
-			}
 		}
-		this.donnees=matrice;
-		this.fireTableDataChanged();
+		
+		}
+		this.donnees = matrice; // recopie de la matrice sur les données
+		this.fireTableDataChanged(); //actualiser la modification des données
 		
 	}
-	
-	
-	//Méthode modification d'une ligne dans la matrice donnees
-	public void modifierLigne(int numLigne, Object[] ligne) {
-		Object[][] matrice= new Object[this.donnees.length][this.entetes.length];
-		for(int i=0; i<this.donnees.length; i++) {
-			if(i==numLigne) {
-				matrice[i]=ligne;
-			}
-			else {
-				matrice[i]=this.donnees[i];
-			}
+	//methode modifier d'une ligne dans la matrice données
+		public void modifierLigne(int numLigne, Object [] ligne) {
+			
+			Object [] [] matrice = new Object [this.donnees.length] [this.entetes.length];
+			for(int i =0; i<this.donnees.length; i++) {
+
+				if(i==numLigne) {
+					matrice[i] = ligne;
+				}else {
+					matrice[i] = this.donnees[i];
+				}
+			
 		}
-		this.donnees=matrice;
-		this.fireTableDataChanged(); //Actualiser la modification de donnees
-	}
+			this.donnees = matrice; // recopie de la matrice sur les données
+			this.fireTableDataChanged(); //actualiser la modification des données
+		}
+		
+		public void setDonnees(Object [] [] matrice) {
+			this.donnees = matrice;
+			this.fireTableDataChanged(); //actualiser la modification des données
+		}
 	
-	public void setDonnees(Object[][] matrice) {
-		this.donnees=matrice;
-		this.fireTableDataChanged();
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
